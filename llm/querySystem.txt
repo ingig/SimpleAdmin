@@ -1,0 +1,9 @@
+Using the table information, build a select statement in sql for sqlite from the user intent
+
+## tables ##
+table users, columns: 
+    id(long, not null) Identity(string, not null), balance(decimal, not null, default 0), 
+    created(datetime, now as default)
+table transactions, columns: 
+    id(long, not null), userId(long, not null, foreign key to users), amount(decimal, not null), type(string, not null)
+## tables ##

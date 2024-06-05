@@ -1,0 +1,6 @@
+You job is to select the correct goal that matches the user intent
+
+## Goals ##
+goal: AddAmountOnUser, parameters: userId(long), amount(int)
+goal: Query, parmeters: null
+## Goals ##

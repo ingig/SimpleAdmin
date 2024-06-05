@@ -1,0 +1,3 @@
+AuthenticateUser
+- if %Identity% is not same as %Settings.Admin%, then
+    - write out error 'Good bye'

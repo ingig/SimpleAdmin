@@ -1,0 +1,27 @@
+Start
+- start webserver
+- listen for a message from %Settings.Admin%, 
+    call !ProcessMessage content=%content%
+
+ProcessMessage
+- read llm/processMessageSystem.txt, into %processMessageSystem%
+- [llm] system: %processMessageSystem%
+        user: %content% 
+        scheme: {goal:string, parameters:object}
+- call goal %goal%, %parameters%
+
+AddAmountOnUser
+- call goal AddAmount %userId%=%parameters.userId%, %amount%=%parameters.amount%
+- send message to %Settings.Admin%, content='Amount added'
+
+Query
+- read llm/querySystem.txt, into %querySystem%
+- [llm] system: %querySystem%
+        user: %content%
+        scheme: {sql:string}
+- select %sql%, write to %results%
+- read llm/formatSystem.txt, load vars, into %formatSystem%
+- [llm] system: %formatSystem%
+        user:%results%
+        write to %response%
+- send message to %Settings.Admin%, content=%response%

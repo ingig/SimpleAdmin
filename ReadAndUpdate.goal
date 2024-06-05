@@ -1,0 +1,4 @@
+ReadAndUpdate
+- čitaj file.txt, upisi u %content%
+- append ' plang world' to %content%
+- write %content% to hello.txt

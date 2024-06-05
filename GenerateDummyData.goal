@@ -1,0 +1,16 @@
+GenerateDummyData
+- [code] generate random users, with properties:
+    Identity (random string)
+    balance (rand number between 1-100)
+    write to %randomUsers%
+- go through %randomUsers%, call InsertRandomUser
+- select id from users, write to %users%
+- foreach %users%, call InsertTransaction
+
+InsertRandomUser
+- insert into users, Identity=%item.Identity%, balance=%item.balance%
+
+InsertTransaction
+- [code] generate random %amount%, between 1-30
+- [code] randomly choose between 'free' and 'creditcard', write to %type%
+- call goal AddAmount userId=%item.id%, amount=%amount%, type=%type%

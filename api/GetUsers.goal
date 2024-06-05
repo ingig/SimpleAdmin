@@ -1,0 +1,3 @@
+GetUsers
+- select the latest 100 users, write to %users%
+- write out %users%

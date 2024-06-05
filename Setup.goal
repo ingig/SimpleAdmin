@@ -1,0 +1,10 @@
+Setup
+- create table users, columns: 
+    Identity(string, not null), balance(decimal, not null, default 0), 
+    created(datetime, now as default)
+- create table transactions, columns: 
+    userId(long, not null), amount(decimal, not null), type(string, not null)
+- call goal GenerateDummyData
+
+
+    

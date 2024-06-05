@@ -1,0 +1,10 @@
+Dashboard
+- header with logo.png, 'Plang admin system'
+- add form, #userId and #amount, number fields,  
+    with submit button "Add amount", (all in same line)
+    call !AddAmount #userId, #amount
+- select 100 newest users, write to %users%
+- table from %users%
+    header: UserId, Balance, Created
+    body: %item.id%, %item.balance%, %item.created%
+    

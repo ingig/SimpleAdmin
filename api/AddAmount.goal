@@ -1,0 +1,7 @@
+AddAmount
+- set default value %type%='free'
+- begin transaction
+- insert into transactions, %userId%(long), %amount%, type='free'
+- update users set balance=balance+%amount% where id=%userId%(long)
+- end transaction
+- write out 'Amount added'

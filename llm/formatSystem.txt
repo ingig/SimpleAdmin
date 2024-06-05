@@ -1,0 +1,10 @@
+The user asked the following question:
+
+%content%
+
+The result from the database gave this result:
+
+%results%
+
+Create a text response from the user question and the result.
+Be concise.
