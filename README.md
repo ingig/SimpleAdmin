@@ -1,155 +1,98 @@
-### Overview of the Application
+## Overview of the Application
 
-The application is a simple administrative tool written in the Plang programming language. It interacts with the Nostr protocol, a decentralized communication protocol, to manage user transactions and queries. The application is designed to be run as a web server. UI is either using Nostr client or is provided through a window application. Here’s a breakdown of what the application does:
+The SimpleAdmin application written in Plang is designed to manage user transactions and communicate through the Nostr protocol. The application can start both as a web server and a window application, listens for messages from a specific admin, processes those messages, and handles user transactions such as adding amounts to user balances. The application structure includes several goals defining different functionalities, such as setting up the database, processing messages, adding amounts to user balances, authenticating users, and handling events. Here's a high-level overview:
 
-1. **Setup Phase**:
-    - Creates necessary database tables (`users` and `transactions`).
-    - Populates the database with some dummy data.
+1. **Setup.goal**: Initializes the database with two tables, `users` and `transactions`, and calls the `GenerateDummyData` goal to populate initial data.
 
-2. **Start Phase**:
-    - Starts a web server to listen for messages.
-    - Processes incoming messages to execute various goals such as adding an amount to a user's balance or querying data.
+2. **Start.goal**: Starts the webserver, listens for messages from the admin, and processes them through the `ProcessMessage` goal. 
 
-3. **Transaction Management**:
-    - Handles adding amounts to user accounts.
-    - Logs transactions in the `transactions` table.
+3. **ProcessMessage.goal**: Reads and processes incoming messages using an LLM system. Depending on the message content, it calls other goals such as `AddAmountOnUser` or `Query`.
 
-4. **Query Handling**:
-    - Processes queries using predefined LLM (Language Model) configurations.
-    - Formats and sends query results back to the admin.
+4. **AddAmountOnUser.goal**: Handles adding a specified amount to a user's balance and logs the transaction.
 
-5. **User Authentication**:
-    - Authenticates users before allowing them to perform certain actions.
+5. **Query.goal**: Processes database queries and formats the results before sending them back to the admin.
 
-6. **Event Handling**:
-    - Executes authentication checks before each API call.
-    - Sends debug information before and after each goal during development.
+6. **StartWindow.goal**: Starts a window application and calls the `ui/Dashboard`.
+
+7. **Events.goal**: Sets up an event to authenticate users before any API calls.
+
+8. **AuthenticateUser.goal**: Checks if the user is an admin and handles authentication.
 
 
 # SimpleAdmin
 
-SimpleAdmin is a lightweight administrative tool written in the Plang programming language. It interacts with the Nostr protocol to handle user transactions and data queries.
+SimpleAdmin is an application written in the Plang programming language, designed to manage user transactions and communicate through the Nostr protocol. The application can run as a web server or a window application and interacts with a specified admin for processing messages and managing user balances.
 
 ## Prerequisites
 
-- **Nostr Client**: 
-  - [Amethyst](https://play.google.com/store/apps/details?id=com.vitorpamplona.amethyst&hl=en&pli=1) (Android)
-  - [Damus](https://apps.apple.com/us/app/damus/id1628663131) (iOS)
+- Install a Nostr client (e.g., Amethyst for Android or Damus for iOS).
+- Find your public Nostr address (starts with `npub....`), which will be required the first time you start the app.
 
 ## Installation
 
-1. **Clone the Repository**:
-    ```sh
-    git clone https://github.com/ingig/SimpleAdmin.git
-    cd SimpleAdmin
-    ```
-
-2. **Install Plang**:
-    Follow the installation guide at [Plang Installation](https://github.com/PLangHQ/plang/blob/main/Documentation/Install.md).
-
-3. **Set Up Database**:
-    ```sh
-    plang exec Setup.goal
-    ```
+To install Plang, follow the instructions in the [Install.md](https://github.com/PLangHQ/plang/blob/main/Documentation/Install.md) or visit the [Plang documentation](https://github.com/PLangHQ/plang/tree/main/Documentation).
 
 ## Running the Application
 
-### Run as Web Server
-```sh
-plang
-```
-This will execute the `Start.goal` file and start the web server.
+1. **Web Server Mode**:
+   - Run the command `plang` in the root folder. This will execute `Start.goal`.
 
-### Run as Window Application
-```sh
-plangw StartWindow
-```
+2. **Window Application Mode**:
+   - Run the command `plangw StartWindow`.
 
-### Build the Application
-```sh
-plang build
-```
+3. **Building the Application**:
+   - Run the command `plang build` in the root directory of your project.
+
+## Goals and Their Functions
+
+### Setup.goal
+- Initializes the database with the `users` and `transactions` tables.
+- Calls the `GenerateDummyData` goal to populate initial data.
+
+### Start.goal
+- Starts the web server.
+- Listens for messages from the admin and processes them using the `ProcessMessage` goal.
+
+### ProcessMessage.goal
+- Reads and processes incoming messages using an LLM system.
+- Calls goals such as `AddAmountOnUser` or `Query` based on message content.
+
+### AddAmountOnUser.goal
+- Adds a specified amount to a user's balance and logs the transaction.
+- Sends a confirmation message back to the admin.
+
+### Query.goal
+- Processes database queries.
+- Formats and sends query results back to the admin.
+
+### StartWindow.goal
+- Starts the window application and calls the `ui/Dashboard`.
+
+### Events.goal
+- Sets up an event to authenticate users before any API calls.
+
+### AuthenticateUser.goal
+- Checks if the user is an admin and handles authentication.
 
 ## Folder Structure
 
-- **llm**: Contains system commands for the LLM.
-- **api**: Contains API-related goals.
-- **ui**: Contains user interface goals.
-- **events**: Contains event handling goals.
-- **.build**: Contains built files.
-- **.db**: Contains the SQLite database files.
+- **llm/**: Contains system commands for the LLM.
+- **api/**: Contains API-related goals.
+- **ui/**: Contains UI-related goals.
+- **events/**: Contains event-related goals.
+- **.build/**: Contains built files for execution.
+- **.db/**: Contains the SQLite database files.
 
-## Goals Overview
+## Usage
 
-### Setup.goal
+- To interact with the app, you will need to use a Nostr client and send messages to the specified admin address.
+- First-time setup will require you to provide your Nostr public address.
 
-Sets up the initial database schema:
-```plang
-Setup
-- create table users, columns: 
-    Identity(string, not null), balance(decimal, not null, default 0), 
-    created(datetime, now as default)
-- create table transactions, columns: 
-    userId(long, not null), amount(decimal, not null), type(string, not null)
-- call goal GenerateDummyData
-```
+## Contact and Support
 
-### Start.goal
-
-Starts the web server and listens for messages:
-```plang
-Start
-- start webserver
-- listen for a message from %Settings.Admin%, 
-    call !ProcessMessage content=%content%
-
-ProcessMessage
-- read llm/processMessageSystem.txt, into %processMessageSystem%
-- [llm] system: %processMessageSystem%
-        user: %content% 
-        scheme: {goal:string, parameters:object}
-- call goal %goal%, %parameters%
-```
-
-### AddAmount.goal
-
-Handles adding amounts to user accounts:
-```plang
-AddAmount
-- set default value %type%='free'
-- begin transaction
-- insert into transactions, %userId%(long), %amount%, type='free'
-- update users set balance=balance+%amount% where id=%userId%(long)
-- end transaction
-- write out 'Amount added'
-```
-
-### StartWindow.goal
-
-Starts the window application:
-```plang
-StartWindows
-- start window app, call ui/Dashboard
-```
-
-### Events.goal
-
-Defines event handling for API calls:
-```plang
-Events
-- before each goal in api/*, call AuthenticateUser
-```
-
-### AuthenticateUser.goal
-
-Authenticates the user:
-```plang
-AuthenticateUser
-- if %Identity% is not same as %Settings.Admin%, then
-    - write out error 'Good bye'
-```
+For assistance, please visit the [Plang Discussion forum](https://github.com/orgs/PLangHQ/discussions) or join the [Discord community](https://discord.gg/A8kYUymsDD).
 
 ## License
 
-This project is licensed under the LGPL License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
